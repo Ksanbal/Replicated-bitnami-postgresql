@@ -7,8 +7,14 @@ services:
       - .env
     volumes:
       - ./.data/pgadmin:/var/lib/pgadmin
-    ports:
-      - "5480:80"
+    expose:
+      - 80
+    labels:
+      - traefik.http.routers.pgadmin.rule=PathPrefix(`/pgadmin`)
+    environment:
+      - SCRIPT_NAME=/pgadmin
+    networks:
+      - traefik-net
 
   master:
     image: bitnami/postgresql:latest
@@ -22,9 +28,11 @@ services:
       - ./.data/postgresql:/var/lib/postgresql/data
       - ./replication-user-grant.sql:/docker-entrypoint-initdb. d/db.sql
     environment:
-      - POSTGRESQL_REPLICATION_MODE=master              # 복제 모드 [master / slave]
+      - POSTGRESQL_REPLICATION_MODE=master # 복제 모드 [master / slave]
       - POSTGRESQL_REPLICATION_USER=repl_user
-  
+    networks:
+      - traefik-net
+
   slave:
     image: bitnami/postgresql:latest
     container_name: postgres-slave
@@ -34,9 +42,15 @@ services:
     ports:
       - "5433:5432"
     environment:
-      - POSTGRESQL_REPLICATION_MODE=slave              # 복제 모드 [master / slave]
+      - POSTGRESQL_REPLICATION_MODE=slave # 복제 모드 [master / slave]
       - POSTGRESQL_REPLICATION_USER=repl_user
       - POSTGRESQL_MASTER_HOST=master
       - POSTGRESQL_MASTER_PORT_NUMBER=5432
     depends_on:
       - master
+    networks:
+      - traefik-net
+
+networks:
+  traefik-net:
+    external: true
