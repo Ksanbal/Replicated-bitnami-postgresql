@@ -5,8 +5,6 @@ services:
     restart: unless-stopped
     env_file:
       - .env
-    volumes:
-      - ./.data/pgadmin:/var/lib/pgadmin
     expose:
       - 80
     labels:
