@@ -23,7 +23,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - .data/postgresql:/var/lib/postgresql/data
+      - .data/postgresql:/bitnami/postgresql/data
       - ./replication-user-grant.sql:/docker-entrypoint-initdb.d/db.sql
     environment:
       - POSTGRESQL_REPLICATION_MODE=master # 복제 모드 [master / slave]
