@@ -15,7 +15,7 @@ services:
       - traefik-net
 
   master:
-    image: bitnami/postgresql:latest
+    image: bitnami/postgresql:16
     container_name: postgres-master
     restart: unless-stopped
     env_file:
@@ -32,7 +32,7 @@ services:
       - traefik-net
 
   slave:
-    image: bitnami/postgresql:latest
+    image: bitnami/postgresql:16
     container_name: postgres-slave
     restart: unless-stopped
     env_file:
